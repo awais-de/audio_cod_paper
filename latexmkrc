@@ -1,0 +1,4 @@
+add_cus_dep('acn', 'acr', 0, 'makeacr');
+sub makeacr {
+    system("makeindex -s \"$_[0].ist\" -t \"$_[0].alg\" -o \"$_[0].acr\" \"$_[0].acn\"");
+}
