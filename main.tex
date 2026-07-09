@@ -1,0 +1,123 @@
+\documentclass[
+    twoside=false,
+    fontsize=12pt,
+    DIV=15,
+    BCOR=17mm,
+    headsepline,
+    footsepline,
+    open=right,
+    paper=a4,
+    abstract=true,
+    listof=totoc,
+    bibliography=totoc,
+    titlepage,
+    headinclude=true,
+    footinclude=false,
+    numbers=noenddot
+]{scrreprt}
+
+% --------------------- Packages ---------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[english]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage{csquotes}
+\usepackage{xcolor}
+\usepackage{float}
+
+% --------------------- GLOSSARY (load BEFORE hyperref) ---------------------
+\usepackage[toc,acronym,nomain]{glossaries}   % <-- nomain = no default main glossary
+\makeglossaries
+
+% --------------------- Hyperref (load LAST) ---------------------
+\usepackage[hidelinks,
+            colorlinks=true,
+            citecolor=black,
+            linkcolor=black,
+            urlcolor=black,
+            filecolor=black]{hyperref}
+
+% --------------------- Page layout (your settings) ---------------------
+\setlength{\topmargin}{1.5cm}
+\setlength{\headheight}{12pt}
+\setlength{\headsep}{20pt}
+\setlength{\topskip}{12pt}
+\setlength{\evensidemargin}{0pt}
+\setlength{\oddsidemargin}{0pt}
+\setlength{\textheight}{240mm}
+\setlength{\textwidth}{160mm}
+\setlength{\voffset}{-2cm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\setcounter{secnumdepth}{3}
+
+% --------------------- Figure/Table numbering per chapter ---------------------
+\makeatletter
+\@addtoreset{equation}{chapter}
+\@addtoreset{figure}{chapter}
+\@addtoreset{table}{chapter}
+\renewcommand\theequation{\thechapter.\arabic{equation}}
+\renewcommand\thefigure{\thechapter.\arabic{figure}}
+\renewcommand\thetable{\thechapter.\arabic{table}}
+\makeatother
+
+\bibliographystyle{unsrt}
+
+% --------------------- Your own files ---------------------
+\input{inc/profile}
+\input{inc/glossary}      % <--- your \newacronym{...} definitions
+\frenchspacing
+
+
+\makeatletter
+\renewcommand{\@eqnnum}{{\normalfont\normalcolor (\theequation)}}
+\makeatother
+\addtolength{\jot}{3pt}
+% -----------------------------------------------------------------
+\begin{document}
+
+% --------------------- Title page ---------------------
+\input{inc/title}
+
+% --------------------- Table of Contents ---------------------
+\renewcommand{\contentsname}{TABLE OF CONTENTS}
+\tableofcontents
+\cleardoublepage
+
+% --------------------- *** ABBREVIATIONS *** ---------------------
+% ONE SINGLE CALL – directly after TOC
+\printglossary[
+    type=\acronymtype,
+    title={List of Abbreviations},
+    toctitle=List of Abbreviations
+]
+\cleardoublepage
+
+% --------------------- List of Tables / Figures ---------------------
+\listoftables
+\cleardoublepage
+\listoffigures
+\cleardoublepage
+
+% --------------------- Abstract ---------------------
+\input{inc/abstract}
+
+% --------------------- Chapters ---------------------
+\input{inc/Chapter1}
+\input{inc/Chapter2}
+\input{inc/Chapter3}
+\input{inc/Chapter4}
+\input{inc/Chapter5}
+\input{inc/Chapter6}
+
+% --------------------- Bibliography ---------------------
+\renewcommand{\bibname}{References}
+\bibliography{bibs/references}
+
+\end{document}

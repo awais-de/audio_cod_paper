@@ -1,0 +1,4 @@
+build/
+*.synctex.gz
+*.synctex(busy)
+.DS_Store
