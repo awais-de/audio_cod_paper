@@ -70,8 +70,8 @@
 \bibliographystyle{unsrt}
 
 % --------------------- Your own files ---------------------
-\input{inc/profile}
-\input{inc/glossary}      % <--- your \newacronym{...} definitions
+\input{chapters/profile}
+\input{chapters/glossary}      % <--- your \newacronym{...} definitions
 \frenchspacing
 
 
@@ -83,7 +83,7 @@
 \begin{document}
 
 % --------------------- Title page ---------------------
-\input{inc/title}
+\input{chapters/title}
 
 % --------------------- Table of Contents ---------------------
 \renewcommand{\contentsname}{TABLE OF CONTENTS}
@@ -106,15 +106,15 @@
 \cleardoublepage
 
 % --------------------- Abstract ---------------------
-\input{inc/abstract}
+\input{chapters/abstract}
 
 % --------------------- Chapters ---------------------
-\input{inc/Chapter1}
-\input{inc/Chapter2}
-\input{inc/Chapter3}
-\input{inc/Chapter4}
-\input{inc/Chapter5}
-\input{inc/Chapter6}
+\input{chapters/ch1_introduction}
+\input{chapters/ch2_background}
+\input{chapters/ch3_methodology}
+\input{chapters/ch4_experiments}
+\input{chapters/ch5_discussion}
+\input{chapters/ch6_conclusion}
 
 % --------------------- Bibliography ---------------------
 \renewcommand{\bibname}{References}
