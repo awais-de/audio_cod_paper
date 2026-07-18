@@ -43,5 +43,6 @@
     ],
     "latex-workshop.latex.recipe.default": "pdflatex -> makeglossaries -> bibtex -> pdflatex x2",
     "latex-workshop.view.pdf.viewer": "tab",
-    "latex-workshop.latex.autoBuild.run": "onSave"
+    "latex-workshop.latex.autoBuild.run": "onSave",
+    "makefile.configureOnOpen": false
 }
