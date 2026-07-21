@@ -1,0 +1,76 @@
+\begin{table}[t]
+\caption[System comparison on LibriSpeech test-clean]{System comparison on LibriSpeech test-clean ($n=40$ utterances, 16\,kHz mono).
+Complexity and delay measured on CPU\@.
+EnCodec complexity is identical across bitrates (same model, different codebook count);
+params and delay shown once per system group.
+AAC encoded with \texttt{ffmpeg} \texttt{libfdk\_aac}; complexity not measured.}
+\label{tab:system_comparison}
+\begin{threeparttable}
+\small
+\begin{tabular}{l
+S[table-format=2.1]
+S[table-format=1.3]
+S[table-format=1.3]
+S[table-format=2.1]
+S[table-format=2.1]
+S[table-format=2.2]}
+\toprule
+{Codec}
+& {Bitrate}
+& {PESQ-WB}
+& {STOI}
+& {Params}
+& {MACs/s}
+& {Algo.\ delay} \\
+& {(kbps)}
+&
+&
+& {(M)}
+& {(G)}
+& {(ms)} \\
+\midrule
+\textbf{EntroCodec (Phase G)\tnote{a}}
+& {\bfseries 5.97}
+& {\bfseries 1.256}
+& {\bfseries 0.792}
+& {\bfseries 21.8}
+& {\bfseries 43.5}
+& {\bfseries 12.19} \\
+\midrule
+EnCodec\tnote{b}
+& 1.5
+& 1.611
+& 0.829
+& {\multirow{3}{*}{14.9}}
+& {\multirow{3}{*}{5.6}}
+& {\multirow{3}{*}{13.33}} \\
+& 3.0
+& 2.148
+& 0.880
+&
+&
+& \\
+& 6.0
+& 2.842
+& 0.922
+&
+&
+& \\
+\midrule
+AAC\tnote{c}
+& 16.0
+& 1.641
+& 0.855
+& {---}
+& {---}
+& {---} \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item[a] Evaluated at trained 3-bit depth; effective bitrate via zlib entropy coding.
+\item[b] Evaluated using the official EnCodec checkpoint at three operating points.
+\item[c] Encoded with \texttt{ffmpeg} \texttt{libfdk\_aac} at 16\,kbps; complexity not measured.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

@@ -1,0 +1,50 @@
+\begin{table}[t]
+\caption[Controlled training curriculum]{Controlled training curriculum. Each phase changes exactly one aspect of the
+training objective while holding architecture, data, and all other hyperparameters fixed.
+Phases A and B are pre-training stages; Phase C is the reconstruction baseline used
+throughout Results. All phases fine-tune from the previous phase's best checkpoint.}
+\label{tab:curriculum}
+\begin{threeparttable}
+\begin{tabular}{c
+>{\raggedright\arraybackslash}p{5.5cm}
+>{\raggedright\arraybackslash}p{4.5cm}}
+\toprule
+Phase
+& Change introduced (relative to previous phase)
+& Primary hypothesis tested \\
+\midrule
+A
+& Float32 baseline; no quantization
+& Establishes a reconstruction upper bound without discretization \\[2pt]
+B
+& 3-bit STE quantization-aware training added
+& Effect of quantization-aware training on reconstruction quality \\[2pt]
+C\tnote{a}
+& Noise augmentation added (white, pink, babble)
+& Robustness--quality tradeoff under augmentation \\[2pt]
+D
+& Uniform-noise QAT proxy replaces STE
+& Alternative differentiable quantization gradient approximation \\[2pt]
+D-VAE\tnote{b}
+& KL-divergence term added; directly penalizes latent entropy
+& Whether reducing latent entropy causes quality to fall (causal experiment) \\[2pt]
+E
+& Log-magnitude STFT loss added
+& Effect of spectral loss on latent entropy and quality \\[2pt]
+F
+& Triple combined spectral loss (40 epochs)
+& Combined spectral objective ceiling \\[2pt]
+G
+& Fine-polish pass ($\text{LR} = 2\times10^{-7}$, 20 epochs)
+& Convergence at reduced learning rate \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item[a] Phase C is the reconstruction baseline for all cross-phase comparisons in Results.
+\item[b] The KL term penalizes entropy only; the reconstruction objective is unchanged
+relative to Phase D. This isolation makes quality changes attributable to the
+entropy penalty alone.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

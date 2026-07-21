@@ -1,0 +1,40 @@
+\begin{table}[t]
+\caption[Rate--distortion sweep across quantization depths]{Rate--distortion sweep on Phase G weights across 1--6 bit quantization depths
+(no retraining). Theoretical bitrate $= 32~\text{dims} \times B~\text{bits} \times 100\,\text{Hz}$.
+Effective bitrate is post-zlib. Quality plateau past the trained depth (3-bit, starred)
+confirms the ceiling is not a resolution constraint.}
+\label{tab:rd_sweep}
+\begin{threeparttable}
+\begin{tabular}{S[table-format=1.0]
+S[table-format=2.0]
+S[table-format=2.1]
+S[table-format=2.2]
+S[table-format=1.3]
+S[table-format=1.3]}
+\toprule
+{Bit depth ($B$)}
+& {Levels ($2^B$)}
+& {Theoretical}
+& {Effective}
+& {PESQ-WB}
+& {STOI} \\
+&
+& {kbps}
+& {kbps}
+&
+& \\
+\midrule
+1 &  2 &  3.2 &  3.55 & 1.082 & 0.456 \\
+2 &  4 &  6.4 &  3.78 & 1.100 & 0.589 \\
+{\bfseries 3\tnote{a}} & {\bfseries 8} & {\bfseries 9.6} & {\bfseries 5.87} & {\bfseries 1.279} & {\bfseries 0.766} \\
+4 & 16 & 12.8 &  8.79 & 1.366 & 0.793 \\
+5 & 32 & 16.0 & 12.17 & 1.397 & 0.804 \\
+6 & 64 & 19.2 & 15.18 & 1.405 & 0.806 \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\footnotesize
+\item[a] Trained bit depth. All other rows use Phase G weights without retraining.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
