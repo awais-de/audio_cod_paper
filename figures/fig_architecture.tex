@@ -34,25 +34,25 @@
 %% ─── ENCODER ───
 \node[enc] (e1) at (0,0) {
   \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \textbf{\small Conv1d Encoder}\\[2pt]
+    \small Conv1d Encoder\\[2pt]
     {\scriptsize 4 layers $\cdot$ stride-2}
   }}
 };
 \node[enc, right=0.30cm of e1] (e2) {
   \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \textbf{\small Causal Transformer}\\[2pt]
+    \small Causal Transformer\\[2pt]
     {\scriptsize 6L $\cdot$ $d$\,=\,384 $\cdot$ 8 heads}
   }}
 };
 \node[enc, right=0.30cm of e2] (e3) {
   \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \textbf{\small Spatial Bottleneck}\\[2pt]
+    \small Spatial Bottleneck\\[2pt]
     {\scriptsize Linear $384 \to 32$}
   }}
 };
 \node[enc, right=0.30cm of e3] (e4) {
   \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \textbf{\small Temporal Bottleneck}\\[2pt]
+    \small Temporal Bottleneck\\[2pt]
     {\scriptsize Conv1d $\div 20$}
   }}
 };
@@ -60,7 +60,7 @@
 %% ─── QUANTIZER ───
 \node[quant, right=0.55cm of e4] (q) {
   \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \textbf{\small 3-bit SQ\,+\,zlib}\\[2pt]
+    \small 3-bit SQ\,+\,zlib\\[2pt]
     {\scriptsize 9.6\,kbps cap}
   }}
 };
@@ -68,25 +68,25 @@
 %% ─── DECODER ───
 \node[dec, right=0.55cm of q] (d1) {
   \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \textbf{\small Temporal Expansion}\\[2pt]
+    \small Temporal Expansion\\[2pt]
     {\scriptsize ConvTranspose1d $\times 20$}
   }}
 };
 \node[dec, right=0.30cm of d1] (d2) {
   \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \textbf{\small Spatial Expansion}\\[2pt]
+    \small Spatial Expansion\\[2pt]
     {\scriptsize Linear $32 \to 384$}
   }}
 };
 \node[dec, right=0.30cm of d2] (d3) {
   \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \textbf{\small Causal Transformer}\\[2pt]
+    \small Causal Transformer\\[2pt]
     {\scriptsize 6L $\cdot$ $d$\,=\,384 $\cdot$ 8 heads}
   }}
 };
 \node[dec, right=0.30cm of d3] (d4) {
   \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \textbf{\small Conv1d Decoder}\\[2pt]
+    \small Conv1d Decoder\\[2pt]
     {\scriptsize 4 layers $\cdot$ stride-2}
   }}
 };
