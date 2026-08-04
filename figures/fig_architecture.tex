@@ -1,145 +1,198 @@
 \begin{figure*}[t]
 \centering
-\resizebox{\textwidth}{!}{%
+\resizebox{0.86\textwidth}{!}{
 \begin{tikzpicture}[
-  font=\sffamily,
-  arr/.style={
-    ->, >=Stealth,
-    line width=0.55pt, color=black!65,
-    shorten >=2pt, shorten <=2pt
-  },
-  enc/.style={
-    rectangle,
-    draw=encborder, line width=0.45pt,
-    fill=encfill,
-    minimum width=1.45cm, minimum height=3.8cm,
-    inner sep=0pt
-  },
-  dec/.style={
-    rectangle,
-    draw=decborder, line width=0.45pt,
-    fill=decfill,
-    minimum width=1.45cm, minimum height=3.8cm,
-    inner sep=0pt
-  },
-  quant/.style={
-    rectangle,
-    draw=qborder, line width=0.45pt,
-    fill=qfill,
-    minimum width=1.55cm, minimum height=3.8cm,
-    inner sep=0pt
-  },
+    >=Stealth,
+    font=\sffamily\footnotesize,
+    block/.style={
+        rectangle, draw, rounded corners=5pt,
+        align=center, text centered,
+        minimum height=1.05cm, minimum width=3.55cm,
+        thick, inner sep=3pt
+    },
+    smallblock/.style={
+        rectangle, draw, rounded corners=4.5pt,
+        align=center, text centered,
+        minimum height=0.95cm, minimum width=3.05cm,
+        thick, inner sep=2.5pt
+    },
+    cnn/.style={fill=orange!15, draw=orange!80!black},
+    tx/.style={fill=cyan!15, draw=cyan!80!black},
+    latent/.style={fill=green!15, draw=green!70!black},
+    quant/.style={fill=red!15, draw=red!80!black},
+    stream/.style={fill=gray!15, draw=gray!70!black},
+    dashed_box/.style={
+        draw, dashed, rounded corners=7pt, thick,
+        inner xsep=0.28cm,
+        inner ysep=0.18cm
+    },
+    arrow/.style={->, thick, draw=black!80},
+    longarrow/.style={->, thick, draw=gray!70!black}
 ]
 
-%% ─── ENCODER ───
-\node[enc] (e1) at (0,0) {
-  \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \small Conv1d Encoder\\[2pt]
-    {\scriptsize 4 layers $\cdot$ stride-2}
-  }}
-};
-\node[enc, right=0.30cm of e1] (e2) {
-  \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \small Causal Transformer\\[2pt]
-    {\scriptsize 6L $\cdot$ $d$\,=\,384 $\cdot$ 8 heads}
-  }}
-};
-\node[enc, right=0.30cm of e2] (e3) {
-  \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \small Spatial Bottleneck\\[2pt]
-    {\scriptsize Linear $384 \to 32$}
-  }}
-};
-\node[enc, right=0.30cm of e3] (e4) {
-  \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \small Temporal Bottleneck\\[2pt]
-    {\scriptsize Conv1d $\div 20$}
-  }}
-};
+% =========================================================
+% LEFT COLUMN
+% =========================================================
 
-%% ─── QUANTIZER ───
-\node[quant, right=0.55cm of e4] (q) {
-  \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \small 3-bit SQ\,+\,zlib\\[2pt]
-    {\scriptsize 9.6\,kbps cap}
-  }}
-};
+\node[smallblock, draw=gray!60, densely dotted] (in) at (-2.9, 5.6)
+{\textbf{Input waveform}\\16 kHz mono\\$(1,16000)$};
 
-%% ─── DECODER ───
-\node[dec, right=0.55cm of q] (d1) {
-  \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \small Temporal Expansion\\[2pt]
-    {\scriptsize ConvTranspose1d $\times 20$}
-  }}
-};
-\node[dec, right=0.30cm of d1] (d2) {
-  \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \small Spatial Expansion\\[2pt]
-    {\scriptsize Linear $32 \to 384$}
-  }}
-};
-\node[dec, right=0.30cm of d2] (d3) {
-  \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \small Causal Transformer\\[2pt]
-    {\scriptsize 6L $\cdot$ $d$\,=\,384 $\cdot$ 8 heads}
-  }}
-};
-\node[dec, right=0.30cm of d3] (d4) {
-  \rotatebox{90}{\parbox[c]{3.3cm}{\centering\color{black}
-    \small Conv1d Decoder\\[2pt]
-    {\scriptsize 4 layers $\cdot$ stride-2}
-  }}
-};
+\node[smallblock, cnn] (cnn_e) at (-2.9, 3.62)
+{\textbf{Causal CNN}\\Encoder\\$(384,2000)$};
 
-%% ─── I/O LABELS ───
-\node[left=0.50cm of e1, font=\sffamily\scriptsize,
-      align=center, color=black!70] (in)
-  {Input\\16\,kHz};
-\node[right=0.50cm of d4, font=\sffamily\scriptsize,
-      align=center, color=black!70] (out)
-  {Output\\16\,kHz};
+\node[smallblock, tx] (tx_e) at (-2.9, 2.10)
+{\textbf{Transformer}$^{\dagger}$\\Encoder\\$(384,2000)$};
 
-%% ─── ARROWS ───
-\draw[arr] (in.east)  -- (e1.west);
-\foreach \u/\v in {e1/e2, e2/e3, e3/e4}
-  \draw[arr] (\u.east) -- (\v.west);
-\draw[arr] (e4.east) -- (q.west);
-\draw[arr] (q.east)  -- (d1.west);
-\foreach \u/\v in {d1/d2, d2/d3, d3/d4}
-  \draw[arr] (\u.east) -- (\v.west);
-\draw[arr] (d4.east) -- (out.west);
+\node[smallblock, latent] (lin_b) at (-2.9, -0.42)
+{\textbf{Spatial bottleneck}\\$384 \rightarrow 32$\\$(32,2000)$};
 
-%% ─── SECTION OVERLINES + LABELS ───
-\draw[encborder, line width=0.65pt]
-  ([yshift=5pt]e1.north west) -- ([yshift=5pt]e4.north east);
-\node[color=encborder, font=\sffamily\bfseries\tiny,
-      anchor=south]
-  at ($(e1.north west)!0.5!(e4.north east) + (0,5pt)$)
-  {ENCODER};
+\node[smallblock, latent] (temp_c) at (-2.9, -1.95)
+{\textbf{Temporal bottleneck}\\$2000 \rightarrow 100$ Hz\\$(32,100)$};
 
-\draw[qborder, line width=0.65pt]
-  ([yshift=5pt]q.north west) -- ([yshift=5pt]q.north east);
+\node[smallblock, quant] (quant) at (-2.9, -4.58)
+{\textbf{Scalar quantizer}\\3-bit uniform\\$(32,100)$};
 
-\draw[decborder, line width=0.65pt]
-  ([yshift=5pt]d1.north west) -- ([yshift=5pt]d4.north east);
-\node[color=decborder, font=\sffamily\bfseries\tiny,
-      anchor=south]
-  at ($(d1.north west)!0.5!(d4.north east) + (0,5pt)$)
-  {DECODER};
+\node[smallblock, quant] (entropy) at (-2.9, -6.05)
+{\textbf{Entropy coding}\\zlib\\$\approx 5.9$ kbps};
 
-\end{tikzpicture}%
+% =========================================================
+% RIGHT COLUMN
+% =========================================================
+
+\node[smallblock, quant] (zdec) at (2.9, -6.05)
+{\textbf{zlib decode}};
+
+\node[smallblock, quant] (dequant) at (2.9, -4.58)
+{\textbf{De-quantization}\\$(32,100)$};
+
+\node[smallblock, latent] (temp_e) at (2.9, -1.95)
+{\textbf{Temporal expansion}\\$100 \rightarrow 2000$ Hz\\$(32,2000)$};
+
+\node[smallblock, latent] (lin_e) at (2.9, -0.42)
+{\textbf{Linear expansion}\\$32 \rightarrow 384$\\$(384,2000)$};
+
+\node[smallblock, tx] (tx_d) at (2.9, 2.10)
+{\textbf{Transformer}$^{\dagger}$\\Decoder\\$(384,2000)$};
+
+\node[smallblock, cnn] (cnn_d) at (2.9, 3.62)
+{\textbf{Causal CNN}\\Decoder\\$(1,16000)$};
+
+\node[smallblock, draw=gray!60, densely dotted] (out) at (2.9, 5.6)
+{\textbf{Reconstructed}\\waveform\\$(1,16000)$};
+
+% =========================================================
+% BITSTREAM
+% =========================================================
+
+\node[block, stream, minimum width=3.1cm] (bitstream) at (0, -7.9)
+{\textbf{Compressed bitstream}\\Storage / transmission};
+
+% =========================================================
+% GROUP BOXES WITH EXTRA TOP HEADROOM
+% =========================================================
+
+\begin{scope}[on background layer]
+\node[dashed_box, draw=cyan!60!gray, fill=cyan!5,
+      fit={($(cnn_e.north west)+(0,0.34)$) ($(tx_e.south east)+(0,-0.02)$)}] (encbox) {};
+
+\node[dashed_box, draw=green!60!gray, fill=green!5,
+      fit={($(lin_b.north west)+(0,0.34)$) ($(temp_c.south east)+(0,-0.02)$)}] (botbox) {};
+
+\node[dashed_box, draw=red!80, fill=red!5,
+      fit={($(quant.north west)+(0,0.34)$) ($(entropy.south east)+(0,-0.02)$)}] (qbox) {};
+
+\node[dashed_box, draw=red!80, fill=red!5,
+      fit={($(zdec.north west)+(0,0.34)$) ($(dequant.south east)+(0,-0.02)$)}] (dqbox) {};
+
+\node[dashed_box, draw=green!60!gray, fill=green!5,
+      fit={($(lin_e.north west)+(0,0.34)$) ($(temp_e.south east)+(0,-0.02)$)}] (expbox) {};
+
+\node[dashed_box, draw=cyan!60!gray, fill=cyan!5,
+      fit={($(cnn_d.north west)+(0,0.34)$) ($(tx_d.south east)+(0,-0.02)$)}] (decbox) {};
+\end{scope}
+
+% =========================================================
+% GROUP TITLES
+% =========================================================
+
+\node[
+    anchor=north west,
+    text=cyan!80!black,
+    font=\sffamily\bfseries\small,
+    fill=white,
+    inner sep=1pt
+] at ([xshift=2pt,yshift=-2pt]encbox.north west) {Encoder};
+
+\node[
+    anchor=north west,
+    text=green!60!black,
+    font=\sffamily\bfseries\small,
+    fill=white,
+    inner sep=1pt
+] at ([xshift=2pt,yshift=-2pt]botbox.north west) {Decoding \& Quantization};
+
+\node[
+    anchor=north west,
+    text=red!80!black,
+    font=\sffamily\bfseries\small,
+    fill=white,
+    inner sep=1pt
+] at ([xshift=2pt,yshift=-2pt]qbox.north west) {Quantization \& Coding};
+
+\node[
+    anchor=north west,
+    text=red!80!black,
+    font=\sffamily\bfseries\small,
+    fill=white,
+    inner sep=1pt
+] at ([xshift=2pt,yshift=-2pt]dqbox.north west) {Dequantization};
+
+\node[
+    anchor=north west,
+    text=green!60!black,
+    font=\sffamily\bfseries\small,
+    fill=white,
+    inner sep=1pt
+] at ([xshift=2pt,yshift=-2pt]expbox.north west) {Latent expansion};
+
+\node[
+    anchor=north west,
+    text=cyan!80!black,
+    font=\sffamily\bfseries\small,
+    fill=white,
+    inner sep=1pt
+] at ([xshift=2pt,yshift=-2pt]decbox.north west) {Decoder};
+
+% =========================================================
+% ARROWS
+% =========================================================
+
+\draw[arrow] (in) -- (cnn_e);
+\draw[arrow] (cnn_e) -- (tx_e);
+\draw[arrow] (tx_e) -- (lin_b);
+\draw[arrow] (lin_b) -- (temp_c);
+\draw[arrow] (temp_c) -- (quant);
+\draw[arrow] (quant) -- (entropy);
+
+\draw[longarrow] (entropy.south) |- (bitstream.west);
+\draw[longarrow] (bitstream.east) -| (zdec.south);
+
+\draw[arrow] (zdec.north) -- (dequant.south);
+\draw[arrow] (dequant.north) -- (temp_e.south);
+\draw[arrow] (temp_e.north) -- (lin_e.south);
+\draw[arrow] (lin_e.north) -- (tx_d.south);
+\draw[arrow] (tx_d.north) -- (cnn_d.south);
+\draw[arrow] (cnn_d.north) -- (out.south);
+
+\end{tikzpicture}
 }
-
 \vspace{4pt}
-{\scriptsize $^{\dag}$Intended 200-frame sliding attention window
+
+{\scriptsize $^{\dagger}$Intended 200-frame sliding attention window
 non-functional due to a mask inversion bug; both Transformer blocks
 trained with full-sequence unbounded causal attention.
 See Section~\ref{sec:system}.}
 
-\caption[EntroCodec architecture]{EntroCodec architecture. The encoder maps 16\,kHz waveform
-input to a 32-dimensional latent at 100\,Hz, discretised via 3-bit
-scalar quantisation and compressed with zlib entropy coding. The
-decoder mirrors the encoder symmetrically. Transformer
-blocks$^{\dag}$.}
+\caption{Two-column neural audio codec architecture with explicit spatial and temporal bottlenecks, quantization, and reversed decoding path.}
 \label{fig:architecture}
 \end{figure*}
